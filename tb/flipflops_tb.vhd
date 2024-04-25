@@ -1,16 +1,16 @@
 -------------------------------------------------------------------------------
 -- Title      : Testbench for design "flipflops"
--- Project    : 
+-- Project    :
 -------------------------------------------------------------------------------
 -- File       : flipflops_tb.vhd
 -- Author     : Hieu D. Bui  <Hieu D. Bui@>
 -- Company    : SISLAB, VNU-UET
 -- Created    : 2017-11-23
 -- Last update: 2017-11-23
--- Platform   : 
+-- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: 
+-- Description:
 -------------------------------------------------------------------------------
 -- Copyright (c) 2017 SISLAB, VNU-UET
 -------------------------------------------------------------------------------
@@ -34,21 +34,21 @@ ARCHITECTURE test OF flipflops_tb IS
 
   -- component ports
   SIGNAL clk : STD_LOGIC := '1';
-  SIGNAL d   : STD_LOGIC;
-  SIGNAL qa  : STD_LOGIC;
-  SIGNAL qb  : STD_LOGIC;
-  SIGNAL qc  : STD_LOGIC;
+  SIGNAL d : STD_LOGIC;
+  SIGNAL qa : STD_LOGIC;
+  SIGNAL qb : STD_LOGIC;
+  SIGNAL qc : STD_LOGIC;
 
-BEGIN  -- ARCHITECTURE test
+BEGIN -- ARCHITECTURE test
 
   -- component instantiation
   DUT : ENTITY work.flipflops
-    PORT MAP (
+    PORT MAP(
       clk => clk,
-      d   => d,
-      qa  => qa,
-      qb  => qb,
-      qc  => qc);
+      d => d,
+      qa => qa,
+      qb => qb,
+      qc => qc);
 
   -- clock generation
   Clk <= NOT Clk AFTER 10 NS;
@@ -61,9 +61,10 @@ BEGIN  -- ARCHITECTURE test
     WAIT FOR 5 NS;
     d <= '1';
     WAIT FOR 3 NS;
+
+    REPORT "END OF SIMULATION" SEVERITY NOTE;
+    WAIT;
   END PROCESS WaveGen_Proc;
-
-
 
 END ARCHITECTURE test;
 

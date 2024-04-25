@@ -1,16 +1,16 @@
 -------------------------------------------------------------------------------
 -- Title      : Testbench for design "accumulator"
--- Project    : 
+-- Project    :
 -------------------------------------------------------------------------------
 -- File       : accumulator_tb.vhd
 -- Author     : Hieu D. Bui  <hieubd@vnu.edu.vn>
 -- Company    : SIS Lab, VNU UET
 -- Created    : 2019-05-17
 -- Last update: 2019-05-17
--- Platform   : 
+-- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: 
+-- Description:
 -------------------------------------------------------------------------------
 -- Copyright (c) 2019 SIS Lab, VNU UET
 -------------------------------------------------------------------------------
@@ -32,30 +32,30 @@ END ENTITY accumulator_tb;
 
 ARCHITECTURE beh OF accumulator_tb IS
 
-  CONSTANT PERIOD        : TIME      := 10 NS;
+  CONSTANT PERIOD : TIME := 10 NS;
   -- component ports
-  SIGNAL clk             : STD_LOGIC := '1';
-  SIGNAL rst_n           : STD_LOGIC := '0';
-  SIGNAL set             : STD_LOGIC;
-  SIGNAL data_in         : SIGNED(7 DOWNTO 0);
-  SIGNAL enable          : STD_LOGIC;
+  SIGNAL clk : STD_LOGIC := '1';
+  SIGNAL rst_n : STD_LOGIC := '0';
+  SIGNAL set : STD_LOGIC;
+  SIGNAL data_in : SIGNED(7 DOWNTO 0);
+  SIGNAL enable : STD_LOGIC;
   SIGNAL accumulator_out : SIGNED(11 DOWNTO 0);
 
-BEGIN  -- ARCHITECTURE beh
+BEGIN -- ARCHITECTURE beh
 
   -- component instantiation
   DUT : ENTITY work.accumulator
-    PORT MAP (
-      clk             => clk,
-      rst_n           => rst_n,
-      set             => set,
-      data_in         => data_in,
-      enable          => enable,
+    PORT MAP(
+      clk => clk,
+      rst_n => rst_n,
+      set => set,
+      data_in => data_in,
+      enable => enable,
       accumulator_out => accumulator_out);
 
   -- clock generation
   clk <= NOT clk AFTER PERIOD/2;
-  rst_n <= '1' AFTER 5*PERIOD + PERIOD/3;
+  rst_n <= '1' AFTER 5 * PERIOD + PERIOD/3;
   -- waveform generation
   WaveGen_Proc : PROCESS
   BEGIN
@@ -79,10 +79,9 @@ BEGIN  -- ARCHITECTURE beh
     -- enable <= '0';
     -- WAIT UNTIL rising_edge(clk);
     -- WAIT FOR PERIOD/3;
-    
+    REPORT "END OF SIMULATION" SEVERITY NOTE;
+    WAIT;
   END PROCESS WaveGen_Proc;
-
-
 
 END ARCHITECTURE beh;
 
