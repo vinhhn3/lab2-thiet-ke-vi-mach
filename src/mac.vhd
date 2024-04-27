@@ -1,13 +1,13 @@
 -------------------------------------------------------------------------------
 -- Title      : Practical exercise
--- Project    : 
+-- Project    :
 -------------------------------------------------------------------------------
 -- File       : mac.vhd
 -- Author     : Hieu D. Bui  <hieubd@vnu.edu.vn>
 -- Company    : SIS Lab, VNU UET
 -- Created    : 2019-05-17
 -- Last update: 2019-05-17
--- Platform   : 
+-- Platform   :
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
 -- Description: Design a multiply-and-accumulate (MAC) module
@@ -26,34 +26,35 @@ USE ieee.numeric_std.ALL;
 ENTITY mac IS
 
   PORT (
-    clk       : IN  STD_LOGIC;
-    rst_n     : IN  STD_LOGIC;
-    ai_in     : IN  SIGNED(7 DOWNTO 0);
-    bi_in     : IN  SIGNED(7 DOWNTO 0);
-    valid_in  : IN  STD_LOGIC;
-    mac_out   : OUT SIGNED(18 DOWNTO 0);
-    valid_out : OUT STD_LOGIC);
+    clk : IN STD_LOGIC;
+    rst_n : IN STD_LOGIC;
+    ai_in : IN SIGNED(7 DOWNTO 0);
+    bi_in : IN SIGNED(7 DOWNTO 0);
+    valid_in : IN STD_LOGIC;
+    mac_out : OUT SIGNED(18 DOWNTO 0);
+    valid_out : OUT STD_LOGIC
+  );
 
 END ENTITY mac;
 
 ARCHITECTURE beh OF mac IS
-  SIGNAL count_reg       : UNSIGNED(1 DOWNTO 0);
+  SIGNAL count_reg : UNSIGNED(1 DOWNTO 0);
   SIGNAL accumulate_reg : SIGNED(18 DOWNTO 0);
-BEGIN  -- ARCHITECTURE beh
+BEGIN -- ARCHITECTURE beh
 
   -- two processes below are examples for you
   -- you should change them to your needs
-  
+
   -- purpose: calculate the MAC
   -- type   : sequential
   -- inputs : clk, rst_n, ai_in, bi_in, valid_in, count_reg
   -- outputs: accumulate_reg
-  mac_proc: PROCESS (clk, rst_n) IS
-  BEGIN  -- PROCESS mac_proc
-    IF rst_n = '0' THEN                 -- asynchronous reset (active low)
+  mac_proc : PROCESS (clk, rst_n) IS
+  BEGIN -- PROCESS mac_proc
+    IF rst_n = '0' THEN -- asynchronous reset (active low)
       accumulate_reg <= (OTHERS => '0');
-    ELSIF rising_edge(clk) THEN         -- rising clock edge
-      
+    ELSIF rising_edge(clk) THEN -- rising clock edge
+
     END IF;
   END PROCESS mac_proc;
 
@@ -61,12 +62,12 @@ BEGIN  -- ARCHITECTURE beh
   -- type   : sequential
   -- inputs : clk, rst_n, valid_in
   -- outputs: count_reg
-  valid_proc: PROCESS (clk, rst_n) IS
-  BEGIN  -- PROCESS valid_proc
-    IF rst_n = '0' THEN                 -- asynchronous reset (active low)
+  valid_proc : PROCESS (clk, rst_n) IS
+  BEGIN -- PROCESS valid_proc
+    IF rst_n = '0' THEN -- asynchronous reset (active low)
       count_reg <= (OTHERS => '0');
-    ELSIF rising_edge(clk) THEN         -- rising clock edge
-      
+    ELSIF rising_edge(clk) THEN -- rising clock edge
+
     END IF;
   END PROCESS valid_proc;
   mac_out <= accumulate_reg;

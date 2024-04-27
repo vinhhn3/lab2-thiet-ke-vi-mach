@@ -33,12 +33,13 @@ END ENTITY flipflops_tb;
 ARCHITECTURE test OF flipflops_tb IS
 
   -- component ports
-  SIGNAL clk : STD_LOGIC := '1';
+  SIGNAL clk : STD_LOGIC := '0';
   SIGNAL d : STD_LOGIC;
   SIGNAL qa : STD_LOGIC;
   SIGNAL qb : STD_LOGIC;
   SIGNAL qc : STD_LOGIC;
 
+  CONSTANT clk_cycle : TIME := 20 NS;
 BEGIN -- ARCHITECTURE test
 
   -- component instantiation
@@ -50,8 +51,10 @@ BEGIN -- ARCHITECTURE test
       qb => qb,
       qc => qc);
 
+  -- Define clock cycle constant
   -- clock generation
-  Clk <= NOT Clk AFTER 10 NS;
+
+  clk <= NOT clk AFTER 10 NS;
 
   -- waveform generation
   WaveGen_Proc : PROCESS
@@ -61,10 +64,34 @@ BEGIN -- ARCHITECTURE test
     WAIT FOR 5 NS;
     d <= '1';
     WAIT FOR 3 NS;
-
-    REPORT "END OF SIMULATION" SEVERITY NOTE;
-    WAIT;
   END PROCESS WaveGen_Proc;
+
+  TestCases_ffa : PROCESS IS
+  BEGIN
+    IF (clk = '1') THEN
+      ASSERT (qa = d) REPORT "Test case ffa failed" SEVERITY error;
+    END IF;
+    REPORT "END TESTCASES_FFA" SEVERITY NOTE;
+    WAIT;
+  END PROCESS TestCases_ffa;
+
+  TestCases_ffb : PROCESS (clk) IS
+  BEGIN
+    IF rising_edge(clk) THEN
+      ASSERT (qb = d) REPORT "Test case ffb failed. qb: " & STD_LOGIC'image(qb) & " d: " & STD_LOGIC'image(d) SEVERITY error;
+    ELSE
+    END IF;
+    REPORT "END TESTCASES_FFb" SEVERITY NOTE;
+  END PROCESS TestCases_ffb;
+
+  TestCases_ffc : PROCESS (clk) IS
+  BEGIN
+    IF falling_edge(clk) THEN
+      ASSERT (qc = d) REPORT "Test case ffc failed" SEVERITY error;
+    ELSE
+    END IF;
+    REPORT "END TESTCASES_FFc" SEVERITY NOTE;
+  END PROCESS TestCases_ffc;
 
 END ARCHITECTURE test;
 

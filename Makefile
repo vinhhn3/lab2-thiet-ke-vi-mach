@@ -28,3 +28,4 @@ runtests: elaborate $(TB_OBJ)
 clean:
 	$(GHDL) --clean
 	rm -f $(OBJ) $(TB_OBJ)
+	exit
