@@ -22,7 +22,7 @@ elaborate: $(OBJ)
 # Rule to run the testbenches
 runtests: elaborate $(TB_OBJ)
 	@echo "Running testbenches: $(TESTBENCHES)"
-	@$(foreach tb,$(TESTBENCHES),powershell -Command "$(GHDL) -r $(tb) --vcd=$(tb).vcd --stop-time=100ns;" )
+	@$(foreach tb,$(TESTBENCHES),powershell -Command "$(GHDL) -r $(tb) --vcd=$(tb).vcd --stop-time=500ns;" )
 
 # Rule to clean the workspace
 clean:
