@@ -46,7 +46,7 @@ BEGIN
   -- Clock process definitions
   clk_process : PROCESS
   BEGIN
-    WHILE now < 200 ns LOOP
+    WHILE now < 1000 ns LOOP
       clk <= '0';
       WAIT FOR clk_period / 2;
       clk <= '1';
@@ -58,47 +58,56 @@ BEGIN
   -- Stimulus process
   stimulus_proc : PROCESS
   BEGIN
-    -- Test case 1: Basic Functionality Test
-    rst_n <= '1'; -- Release reset
-    set <= '0'; -- Ensure set is deasserted
-    enable <= '1'; -- Enable accumulator
-
-    data_in <= to_signed(10, 8); -- Input data
-    WAIT FOR 20 ns; -- Wait for a clock cycle
-    ASSERT accumulator_out /= to_signed(10, 12)
-    REPORT "Test case 1 failed: Basic Functionality Test"
-      SEVERITY error;
-
-    -- Test case 2: Reset Test
-    rst_n <= '0'; -- Assert reset
-    WAIT FOR 20 ns; -- Wait for a clock cycle
+    -- Test case 1: reset_n = 0
+    rst_n <= '0';
+    enable <= '1';
+    data_in <= to_signed(30, 8);
+    WAIT FOR 20 ns;
     ASSERT accumulator_out = to_signed(0, 12)
-    REPORT "Test case 2 failed: Reset Test"
+    REPORT "Test case 1 failed: reset_n = 0"
       SEVERITY error;
 
-    -- Test case 3: Disable Accumulator Test
-    enable <= '0'; -- Disable accumulator
-    data_in <= to_signed(20, 8); -- Input data
-    WAIT FOR 20 ns; -- Wait for a clock cycle
-    ASSERT accumulator_out /= to_signed(20, 12)
-    REPORT "Test case 3 failed: Disable Accumulator Test"
-      SEVERITY error;
-
-    -- Test case 4: Set Test
-    set <= '1'; -- Assert set
-    data_in <= to_signed(30, 8); -- Input data
-    WAIT FOR 20 ns; -- Wait for a clock cycle
-    ASSERT accumulator_out /= to_signed(30, 12)
-    REPORT "Test case 4 failed: Set Test"
-      SEVERITY error;
-
-    -- Test case 5: Accumulator Overflow Test
-    data_in <= to_signed(4096, 8); -- Input data that causes overflow
-    WAIT FOR 20 ns; -- Wait for a clock cycle
+    -- Test case 2: enable = 0
+    rst_n <= '1';
+    enable <= '0';
+    data_in <= to_signed(30, 8);
+    WAIT FOR 20 ns;
     ASSERT accumulator_out = to_signed(0, 12)
-    REPORT "Test case 5 failed: Accumulator Overflow Test"
+    REPORT "Test case 2 failed: enable = 0"
       SEVERITY error;
 
+    -- Test case 3: data_in = 0
+    rst_n <= '1';
+    enable <= '1';
+    data_in <= to_signed(0, 8);
+    WAIT FOR 20 ns;
+    ASSERT accumulator_out = to_signed(0, 12)
+    REPORT "Test case 3 failed: data_in = 0"
+      SEVERITY error;
+
+    -- Test case 4: set = 1 to test data_in = accumulator = 30
+    rst_n <= '1';
+    enable <= '1';
+    set <= '1';
+    data_in <= to_signed(30, 8);
+    WAIT UNTIL clk = '1';
+    WAIT FOR 2 ns;
+    ASSERT accumulator_out = to_signed(30, 12)
+    REPORT "Test case 4 failed: set = 1"
+      SEVERITY error;
+
+    -- Test case 5: Test accumulator for each clock cycle
+    rst_n <= '1';
+    enable <= '1';
+    set <= '0';
+    data_in <= to_signed(30, 8);
+    WAIT UNTIL clk = '1';
+    WAIT FOR 5 ns;
+    REPORT "accumulator_out: " & INTEGER'image(to_integer(accumulator_out));
+    ASSERT accumulator_out = to_signed(60, 12);
+    REPORT "Test case 5 failed: Test accumulator for each clock cycle"
+      SEVERITY error;
+    REPORT "END ACCUMULATOR_TB PROCESS";
     WAIT;
   END PROCESS;
 

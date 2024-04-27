@@ -54,45 +54,55 @@ BEGIN -- ARCHITECTURE test
   -- Define clock cycle constant
   -- clock generation
 
-  clk <= NOT clk AFTER 10 NS;
-
-  -- waveform generation
-  WaveGen_Proc : PROCESS
+  clk_process : PROCESS
   BEGIN
-    -- insert signal assignments here
-    d <= '0';
-    WAIT FOR 5 NS;
-    d <= '1';
-    WAIT FOR 3 NS;
-  END PROCESS WaveGen_Proc;
-
-  TestCases_ffa : PROCESS IS
-  BEGIN
-    IF (clk = '1') THEN
-      ASSERT (qa = d) REPORT "Test case ffa failed" SEVERITY error;
-    END IF;
-    REPORT "END TESTCASES_FFA" SEVERITY NOTE;
+    WHILE now < 1000 ns LOOP
+      clk <= '0';
+      WAIT FOR clk_cycle / 2;
+      clk <= '1';
+      WAIT FOR clk_cycle / 2;
+    END LOOP;
     WAIT;
-  END PROCESS TestCases_ffa;
+  END PROCESS clk_process;
 
-  TestCases_ffb : PROCESS (clk) IS
+  test_cases : PROCESS
   BEGIN
-    IF rising_edge(clk) THEN
-      ASSERT (qb = d) REPORT "Test case ffb failed. qb: " & STD_LOGIC'image(qb) & " d: " & STD_LOGIC'image(d) SEVERITY error;
-    ELSE
+    -- test cases for ffa
+    d <= '0';
+    WAIT FOR 2 * clk_cycle;
+    IF (clk = '1') THEN
+      ASSERT (qa = '0') REPORT "FFA: qa = 0" SEVERITY ERROR;
     END IF;
-    REPORT "END TESTCASES_FFb" SEVERITY NOTE;
-  END PROCESS TestCases_ffb;
 
-  TestCases_ffc : PROCESS (clk) IS
-  BEGIN
-    IF falling_edge(clk) THEN
-      ASSERT (qc = d) REPORT "Test case ffc failed" SEVERITY error;
-    ELSE
+    d <= '1';
+    WAIT FOR 2 * clk_cycle;
+    IF (clk = '1') THEN
+      ASSERT (qa = d) REPORT "FFA: qa = 1" SEVERITY ERROR;
     END IF;
-    REPORT "END TESTCASES_FFc" SEVERITY NOTE;
-  END PROCESS TestCases_ffc;
 
+    d <= '0';
+    WAIT UNTIL clk = '1';
+    WAIT FOR 5 ns;
+    ASSERT (qb = d) REPORT "FFB: qb = 0" SEVERITY ERROR;
+
+    d <= '1';
+    WAIT UNTIL clk = '1';
+    WAIT FOR 5 ns;
+    ASSERT (qb = d) REPORT "FFB: qb = 1" SEVERITY ERROR;
+
+    d <= '0';
+    WAIT UNTIL clk = '0';
+    WAIT FOR 5 ns;
+    ASSERT (qc = d) REPORT "FFC: qc = 0" SEVERITY ERROR;
+
+    d <= '1';
+    WAIT UNTIL clk = '0';
+    WAIT FOR 5 ns;
+    ASSERT (qc = '1') REPORT "FFC: qc = 1" SEVERITY ERROR;
+
+    REPORT "END TEST CASES" SEVERITY NOTE;
+    WAIT;
+  END PROCESS test_cases;
 END ARCHITECTURE test;
 
 -------------------------------------------------------------------------------
