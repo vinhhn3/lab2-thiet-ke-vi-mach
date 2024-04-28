@@ -93,11 +93,16 @@ BEGIN -- ARCHITECTURE beh
     WAIT FOR 2 ns;
     ASSERT mac_out = to_signed(24, 19) REPORT "Test case 1 failed" SEVERITY error;
     ASSERT valid_out = '1' REPORT "Test case 1 failed" SEVERITY error;
-    -- Test case 2: valid_in = '0', keep mac_out = 24, valid_out = 1
+    -- Waiting for 4 cycles, mac_out = 48
+    -- valid_out = 1
+    WAIT FOR 4 * PERIOD;
+    ASSERT mac_out = to_signed(48, 19) REPORT "Test case 1 failed" SEVERITY error;
+    ASSERT valid_out = '1' REPORT "Test case 1 failed" SEVERITY error;
+    -- Test case 2: valid_in = '0', keep mac_out = 48, valid_out = 1
     valid_in <= '0';
     WAIT UNTIL rising_edge(clk);
     WAIT FOR 2 ns;
-    ASSERT mac_out = to_signed(24, 19) REPORT "Test case 2 failed" SEVERITY error;
+    ASSERT mac_out = to_signed(48, 19) REPORT "Test case 2 failed" SEVERITY error;
     ASSERT valid_out = '1' REPORT "Test case 2 failed" SEVERITY error;
 
     -- Test case 3: reset_n = 0, mac_out = 0, valid_out = 0

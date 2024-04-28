@@ -71,7 +71,7 @@ BEGIN -- ARCHITECTURE beh
     ELSIF rising_edge(clk) THEN -- rising clock edge
       IF valid_in = '1' THEN
         IF count_reg = "100" THEN
-          count_reg <= (OTHERS => '0');
+          count_reg <= "001";
         ELSE
           count_reg <= count_reg + 1;
         END IF;
