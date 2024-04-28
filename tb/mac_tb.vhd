@@ -58,7 +58,7 @@ BEGIN -- ARCHITECTURE beh
 
   -- clock generation
   Clk <= NOT Clk AFTER PERIOD/2;
-  rst_n <= '1' AFTER 5 * PERIOD + PERIOD/3;
+  -- rst_n <= '1' AFTER 5 * PERIOD + PERIOD/3;
   -- waveform generation
   WaveGen_Proc : PROCESS
   BEGIN
@@ -66,25 +66,46 @@ BEGIN -- ARCHITECTURE beh
     ai_in <= to_signed(0, ai_in'LENGTH);
     bi_in <= to_signed(0, bi_in'LENGTH);
     valid_in <= '0';
-    WAIT UNTIL rst_n = '1';
+
+    WAIT FOR 15 ns;
+
+    -- Test case 1: ai_in = 2, bi_in = 3, valid_in = '1'
+    ai_in <= to_signed(2, 8);
+    bi_in <= to_signed(3, 8);
+    valid_in <= '1';
+    rst_n <= '1';
+
     WAIT UNTIL rising_edge(clk);
-    WAIT FOR PERIOD/3;
-    -- insert signal assignments here
-    -- put your single here
-    -- for example
-    -- ai_in <= to_signed(0, data_in'LENGTH);
-    -- bi_in <= to_signed(0, data_in'LENGTH);
-    -- valid_in <= '1';
-    -- WAIT UNTIL rising_edge(clk);
+    WAIT FOR 2 ns;
+    -- 1 cycle, it should be 6
+    ASSERT mac_out = to_signed(6, 19) REPORT "Test case 1 failed" SEVERITY error;
+    -- Another cycle, it should be 12
+    WAIT UNTIL rising_edge(clk);
+    WAIT FOR 2 ns;
+    ASSERT mac_out = to_signed(12, 19) REPORT "Test case 1 failed" SEVERITY error;
+    -- Another cycle, it should be 18
+    WAIT UNTIL rising_edge(clk);
+    WAIT FOR 2 ns;
+    ASSERT mac_out = to_signed(18, 19) REPORT "Test case 1 failed" SEVERITY error;
+    -- Another cycle, it should be 24
+    -- valid_out = 1
+    WAIT UNTIL rising_edge(clk);
+    WAIT FOR 2 ns;
+    ASSERT mac_out = to_signed(24, 19) REPORT "Test case 1 failed" SEVERITY error;
+    ASSERT valid_out = '1' REPORT "Test case 1 failed" SEVERITY error;
+    -- Test case 2: valid_in = '0', keep mac_out = 24, valid_out = 1
+    valid_in <= '0';
+    WAIT UNTIL rising_edge(clk);
+    WAIT FOR 2 ns;
+    ASSERT mac_out = to_signed(24, 19) REPORT "Test case 2 failed" SEVERITY error;
+    ASSERT valid_out = '1' REPORT "Test case 2 failed" SEVERITY error;
 
-    -- WAIT FOR PERIOD/3;
-    -- ai_in <= to_signed(0, data_in'LENGTH);
-    -- bi_in <= to_signed(0, data_in'LENGTH);
-    -- valid_in <= '1';
-    -- WAIT UNTIL rising_edge(clk);
-    -- WAIT FOR PERIOD/3;
-
-    REPORT "END OF SIMULATION" SEVERITY NOTE;
+    -- Test case 3: reset_n = 0, mac_out = 0, valid_out = 0
+    rst_n <= '0';
+    WAIT FOR 2 ns;
+    ASSERT mac_out = to_signed(0, 19) REPORT "Test case 3 failed" SEVERITY error;
+    ASSERT valid_out = '0' REPORT "Test case 3 failed" SEVERITY error;
+    REPORT "END OF SIMULATION MAC TB" SEVERITY NOTE;
     WAIT;
   END PROCESS WaveGen_Proc;
 

@@ -38,7 +38,7 @@ ENTITY mac IS
 END ENTITY mac;
 
 ARCHITECTURE beh OF mac IS
-  SIGNAL count_reg : UNSIGNED(1 DOWNTO 0);
+  SIGNAL count_reg : UNSIGNED(2 DOWNTO 0) := (OTHERS => '0');
   SIGNAL accumulate_reg : SIGNED(18 DOWNTO 0);
 BEGIN -- ARCHITECTURE beh
 
@@ -70,13 +70,17 @@ BEGIN -- ARCHITECTURE beh
       count_reg <= (OTHERS => '0');
     ELSIF rising_edge(clk) THEN -- rising clock edge
       IF valid_in = '1' THEN
-        count_reg <= count_reg + 1;
+        IF count_reg = "100" THEN
+          count_reg <= (OTHERS => '0');
+        ELSE
+          count_reg <= count_reg + 1;
+        END IF;
       END IF;
 
     END IF;
   END PROCESS valid_proc;
   mac_out <= accumulate_reg;
   -- valid_out depends on conut_reg, you can write your logics here
-  valid_out <= '1' WHEN count_reg = "11" ELSE
+  valid_out <= '1' WHEN count_reg = "100" ELSE
     '0';
 END ARCHITECTURE beh;
