@@ -96,11 +96,20 @@ BEGIN
     REPORT "Test case 4 failed: set = 1"
       SEVERITY error;
 
+    -- Reset SIGNAL
+    rst_n <= '1';
+    enable <= '1';
+    set <= '1';
+    data_in <= to_signed(0, 8);
+    WAIT UNTIL clk = '1';
     -- Test case 5: Test accumulator for each clock cycle
     rst_n <= '1';
     enable <= '1';
     set <= '0';
     data_in <= to_signed(30, 8);
+    --  Wait for 2 clock cycles
+    WAIT UNTIL clk = '1' AND clk'EVENT;
+    WAIT FOR 5 ns;
     WAIT UNTIL clk = '1' AND clk'EVENT;
     WAIT FOR 5 ns;
     ASSERT accumulator_out = to_signed(60, 12)

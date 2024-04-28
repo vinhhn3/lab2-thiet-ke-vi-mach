@@ -54,7 +54,9 @@ BEGIN -- ARCHITECTURE beh
     IF rst_n = '0' THEN -- asynchronous reset (active low)
       accumulate_reg <= (OTHERS => '0');
     ELSIF rising_edge(clk) THEN -- rising clock edge
-
+      IF valid_in = '1' THEN
+        accumulate_reg <= accumulate_reg + ai_in * bi_in;
+      END IF;
     END IF;
   END PROCESS mac_proc;
 
@@ -67,10 +69,14 @@ BEGIN -- ARCHITECTURE beh
     IF rst_n = '0' THEN -- asynchronous reset (active low)
       count_reg <= (OTHERS => '0');
     ELSIF rising_edge(clk) THEN -- rising clock edge
+      IF valid_in = '1' THEN
+        count_reg <= count_reg + 1;
+      END IF;
 
     END IF;
   END PROCESS valid_proc;
   mac_out <= accumulate_reg;
   -- valid_out depends on conut_reg, you can write your logics here
-  valid_out <= '0';
+  valid_out <= '1' WHEN count_reg = "11" ELSE
+    '0';
 END ARCHITECTURE beh;
