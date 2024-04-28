@@ -21,7 +21,6 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
-
 -------------------------------------------------------------------------------
 
 ENTITY flipflops_tb IS
@@ -31,7 +30,15 @@ END ENTITY flipflops_tb;
 -------------------------------------------------------------------------------
 
 ARCHITECTURE test OF flipflops_tb IS
-
+  COMPONENT flipflops
+    PORT (
+      clk : IN STD_LOGIC;
+      d : IN STD_LOGIC;
+      qa : OUT STD_LOGIC;
+      qb : OUT STD_LOGIC;
+      qc : OUT STD_LOGIC
+    );
+  END COMPONENT;
   -- component ports
   SIGNAL clk : STD_LOGIC := '0';
   SIGNAL d : STD_LOGIC;
@@ -43,14 +50,14 @@ ARCHITECTURE test OF flipflops_tb IS
 BEGIN -- ARCHITECTURE test
 
   -- component instantiation
-  DUT : ENTITY work.flipflops
-    PORT MAP(
-      clk => clk,
-      d => d,
-      qa => qa,
-      qb => qb,
-      qc => qc);
-
+  DUT : flipflops
+  PORT MAP(
+    clk => clk,
+    d => d,
+    qa => qa,
+    qb => qb,
+    qc => qc
+  );
   -- Define clock cycle constant
   -- clock generation
 

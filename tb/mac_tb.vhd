@@ -22,7 +22,6 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
-
 -------------------------------------------------------------------------------
 
 ENTITY mac_tb IS
@@ -32,7 +31,17 @@ END ENTITY mac_tb;
 -------------------------------------------------------------------------------
 
 ARCHITECTURE beh OF mac_tb IS
-
+  COMPONENT mac
+    PORT (
+      clk : IN STD_LOGIC;
+      rst_n : IN STD_LOGIC;
+      ai_in : IN SIGNED(7 DOWNTO 0);
+      bi_in : IN SIGNED(7 DOWNTO 0);
+      valid_in : IN STD_LOGIC;
+      mac_out : OUT SIGNED(18 DOWNTO 0);
+      valid_out : OUT STD_LOGIC
+    );
+  END COMPONENT;
   CONSTANT PERIOD : TIME := 10 NS;
   -- component ports
   SIGNAL clk : STD_LOGIC := '1';
@@ -46,15 +55,15 @@ ARCHITECTURE beh OF mac_tb IS
 BEGIN -- ARCHITECTURE beh
 
   -- component instantiation
-  DUT : ENTITY work.mac
-    PORT MAP(
-      clk => clk,
-      rst_n => rst_n,
-      ai_in => ai_in,
-      bi_in => bi_in,
-      valid_in => valid_in,
-      mac_out => mac_out,
-      valid_out => valid_out);
+  DUT : mac
+  PORT MAP(
+    clk => clk,
+    rst_n => rst_n,
+    ai_in => ai_in,
+    bi_in => bi_in,
+    valid_in => valid_in,
+    mac_out => mac_out,
+    valid_out => valid_out);
 
   -- clock generation
   Clk <= NOT Clk AFTER PERIOD/2;
