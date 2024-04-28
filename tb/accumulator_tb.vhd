@@ -101,12 +101,65 @@ BEGIN
     enable <= '1';
     set <= '0';
     data_in <= to_signed(30, 8);
-    WAIT UNTIL clk = '1';
+    WAIT UNTIL clk = '1' AND clk'EVENT;
     WAIT FOR 5 ns;
-    REPORT "accumulator_out: " & INTEGER'image(to_integer(accumulator_out));
-    ASSERT accumulator_out = to_signed(60, 12);
+    ASSERT accumulator_out = to_signed(60, 12)
     REPORT "Test case 5 failed: Test accumulator for each clock cycle"
       SEVERITY error;
+    -- Reset SIGNAL
+    rst_n <= '1';
+    enable <= '1';
+    set <= '1';
+    data_in <= to_signed(0, 8);
+    WAIT UNTIL clk = '1';
+
+    -- Test case 6: Test accumulator with negative input
+    rst_n <= '1';
+    enable <= '1';
+    set <= '0';
+    data_in <= to_signed(-30, 8);
+    WAIT UNTIL clk = '1' AND clk'EVENT;
+    WAIT FOR 5 ns;
+    ASSERT accumulator_out = to_signed(-30, 8)
+    REPORT "Test case 6 failed: Test accumulator with negative input"
+      SEVERITY error;
+
+    -- Reset SIGNAL
+    rst_n <= '1';
+    enable <= '1';
+    set <= '1';
+    data_in <= to_signed(0, 8);
+    WAIT UNTIL clk = '1';
+
+    -- Test case 7: Test accumulator with maximum positive input
+    rst_n <= '1';
+    enable <= '1';
+    set <= '0';
+    data_in <= to_signed(127, 8);
+    WAIT UNTIL clk = '1' AND clk'EVENT;
+    WAIT FOR 5 ns;
+    ASSERT accumulator_out = to_signed(127, 8)
+    REPORT "Test case 7 failed: Test accumulator with maximum positive input"
+      SEVERITY error;
+
+    -- Reset SIGNAL
+    rst_n <= '1';
+    enable <= '1';
+    set <= '1';
+    data_in <= to_signed(0, 8);
+    WAIT UNTIL clk = '1';
+
+    -- Test case 8: Test accumulator with maximum negative input
+    rst_n <= '1';
+    enable <= '1';
+    set <= '0';
+    data_in <= to_signed(-128, 8);
+    WAIT UNTIL clk = '1' AND clk'EVENT;
+    WAIT FOR 5 ns;
+    ASSERT accumulator_out = to_signed(-128, 8)
+    REPORT "Test case 8 failed: Test accumulator with maximum negative input"
+      SEVERITY error;
+
     REPORT "END ACCUMULATOR_TB PROCESS";
     WAIT;
   END PROCESS;
