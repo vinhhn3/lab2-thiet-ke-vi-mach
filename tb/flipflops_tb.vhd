@@ -76,34 +76,36 @@ BEGIN -- ARCHITECTURE test
   BEGIN
     -- test cases for ffa
     d <= '0';
-    WAIT FOR 2 * clk_cycle;
+    WAIT FOR 5 ns;
     IF (clk = '1') THEN
       ASSERT (qa = '0') REPORT "FFA: qa = 0" SEVERITY ERROR;
     END IF;
 
     d <= '1';
-    WAIT FOR 2 * clk_cycle;
+    WAIT FOR 5 ns;
     IF (clk = '1') THEN
       ASSERT (qa = d) REPORT "FFA: qa = 1" SEVERITY ERROR;
     END IF;
 
+    -- test cases for ffb
     d <= '0';
-    WAIT UNTIL clk = '1';
+    WAIT UNTIL rising_edge(clk);
     WAIT FOR 5 ns;
     ASSERT (qb = d) REPORT "FFB: qb = 0" SEVERITY ERROR;
 
     d <= '1';
-    WAIT UNTIL clk = '1';
+    WAIT UNTIL rising_edge(clk);
     WAIT FOR 5 ns;
     ASSERT (qb = d) REPORT "FFB: qb = 1" SEVERITY ERROR;
 
+    -- test cases for ffc
     d <= '0';
-    WAIT UNTIL clk = '0';
+    WAIT UNTIL falling_edge(clk);
     WAIT FOR 5 ns;
     ASSERT (qc = d) REPORT "FFC: qc = 0" SEVERITY ERROR;
 
     d <= '1';
-    WAIT UNTIL clk = '0';
+    WAIT UNTIL falling_edge(clk);
     WAIT FOR 5 ns;
     ASSERT (qc = '1') REPORT "FFC: qc = 1" SEVERITY ERROR;
 

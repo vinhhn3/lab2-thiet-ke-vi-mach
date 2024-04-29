@@ -42,14 +42,6 @@ ARCHITECTURE beh OF mac IS
   SIGNAL count_reg : UNSIGNED(2 DOWNTO 0) := (OTHERS => '0');
   SIGNAL accumulate_reg : SIGNED(18 DOWNTO 0);
 BEGIN -- ARCHITECTURE beh
-
-  -- two processes below are examples for you
-  -- you should change them to your needs
-
-  -- purpose: calculate the MAC
-  -- type   : sequential
-  -- inputs : clk, rst_n, ai_in, bi_in, valid_in, count_reg
-  -- outputs: accumulate_reg
   mac_proc : PROCESS (clk, rst_n) IS
   BEGIN -- PROCESS mac_proc
     IF rst_n = '0' THEN -- asynchronous reset (active low)
@@ -60,11 +52,6 @@ BEGIN -- ARCHITECTURE beh
       END IF;
     END IF;
   END PROCESS mac_proc;
-
-  -- purpose: create a counter to track the number of inputs processed
-  -- type   : sequential
-  -- inputs : clk, rst_n, valid_in
-  -- outputs: count_reg
   valid_proc : PROCESS (clk, rst_n) IS
   BEGIN -- PROCESS valid_proc
     IF rst_n = '0' THEN -- asynchronous reset (active low)
@@ -77,7 +64,6 @@ BEGIN -- ARCHITECTURE beh
           count_reg <= count_reg + 1;
         END IF;
       END IF;
-
     END IF;
   END PROCESS valid_proc;
   mac_out <= accumulate_reg;

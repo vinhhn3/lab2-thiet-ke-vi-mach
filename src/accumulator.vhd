@@ -39,12 +39,6 @@ ARCHITECTURE beh OF accumulator IS
   SIGNAL accumulator_reg : SIGNED(11 DOWNTO 0);
 BEGIN -- ARCHITECTURE beh
 
-  -- the line below is purely for example purpose
-  -- You must change it to your need
-  -- purpose: Accumulator description
-  -- type   : sequential
-  -- inputs : clk, rst_n, set, enable, data_in
-  -- outputs: accumulator_reg
   accumulator_proc : PROCESS (clk, rst_n) IS
   BEGIN -- PROCESS accumulator_proc
     IF rst_n = '0' THEN -- asynchronous reset (active low)
